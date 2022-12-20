@@ -1,13 +1,17 @@
 ﻿using api.Data;
 using apiProjetoFinaceiro.Model;
+using apiProjetoFinaceiro.Model.ClasseDbSet;
 using apiProjetoFinaceiro.Model.Domain;
 using apiProjetoFinaceiro.Model.Imput;
 using apiProjetoFinaceiro.Model.Mapping;
 using apiProjetoFinaceiro.Model.View;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.EntityFrameworkCore;
 
 namespace apiProjetoFinaceiro.services
 {
+
     public class UsuarioServices : IUsuarioServices
     {
         public readonly DataContext _context;
@@ -16,20 +20,32 @@ namespace apiProjetoFinaceiro.services
         {
             _context = context;
         }
-        public async Task<UsuarioViewModel> Create(UsuarioImputModel input)
+        public async Task<RespostaApi<UsuarioViewModel>> Create(UsuarioImputModel input)
         {
-            var cidade = await _context.cidade.FindAsync(input.Cidade.Id);
+            Cidade cidade = await _context.cidade.FindAsync(input.Cidade.Id);
             if (cidade == null) return null;
-            var bairro = await _context.bairro.FindAsync(input.Bairro.Id);
+            Bairro bairro = await _context.bairro.FindAsync(input.Bairro.Id);
             if (bairro == null) return null;
-            var usuario = new Usuario(input.Nome, input.Senha, input.Email, input.Telefone, cidade, bairro, input.CPF, input.DataNascimento, SituacaoEnum.ATIVO.ToString());
+            //var usuario = new Usuario(input.Nome, input.Senha, input.Email, input.Telefone, cidade, bairro, input.CPF, input.DataNascimento, SituacaoEnum.ATIVO.ToString());
+            var usuario = new Usuario("", "123", "", input.Telefone, cidade, bairro, input.CPF, input.DataNascimento, SituacaoEnum.ATIVO.ToString());
+            //if (usuario == null) usuario.AddErro("O usuario deve ter todos os campos preenchidos!");
+            if (!usuario.EhValido)
+            {
+                //RespostaApi<List<string>> RetornoErro = new RespostaApi<List<string>>;
+                //RetornoErro.MenssagemErro = usuario.Erros;
 
-            if (usuario.CadastrarUsuario(usuario) == false)
-                return default;
+                return new RespostaApi<UsuarioViewModel>
+                {
+                    MenssagemErro = usuario.Erros,
+                    Erro=true,
 
-            _context.usuario.Add(usuario);
+                };
+            }
+            var novoUsuario = new UsuarioDbSet(usuario.Nome, usuario.Senha, usuario.Email, usuario.Telefone, cidade, bairro, usuario.CPF, usuario.DataNascimento, SituacaoEnum.ATIVO.ToString());
+            _context.usuario.Add(novoUsuario);
             await _context.SaveChangesAsync();
-            return usuario.ParaViewModel();
+            return new RespostaApi<UsuarioViewModel>
+            { Dados = novoUsuario.ParaViewModel() };
         }
 
         public async Task Delete(int id)
@@ -59,7 +75,7 @@ namespace apiProjetoFinaceiro.services
             return usuario.ParaViewModel();
         }
 
-        public async Task<UsuarioViewModel> Logim(Login login)
+        public async Task<UsuarioViewModel> Logim(LoginInputModel login)
         {
             var usuario = await _context.usuario.Include(p => p.Bairro)
                 .Include(p => p.Cidade)
@@ -71,18 +87,18 @@ namespace apiProjetoFinaceiro.services
 
         }
 
-        public async Task Update(Usuario usuario)
+        public async Task Update(UsuarioImputModel usuarioInputModel)
         {
             //_context.Entry(usuario).State = EntityState.Modified;
-            _context.Update(usuario);
+            _context.Update(usuarioInputModel);
             await _context.SaveChangesAsync();
         }
         public async Task<IEnumerable<CidadeViewModel>> BuscarCidades()
         {
 
-            IEnumerable<CidadeViewModel> cidades= _context.cidade.Select(C=>C.ParaViewModel());
+            IEnumerable<CidadeViewModel> cidades = _context.cidade.Select(C => C.ParaViewModel());
             return cidades;
-                               
+
 
         }
 

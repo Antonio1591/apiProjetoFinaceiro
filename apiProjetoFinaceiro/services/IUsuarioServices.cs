@@ -1,4 +1,5 @@
-﻿using apiProjetoFinaceiro.Model.Domain;
+﻿using apiProjetoFinaceiro.Model;
+using apiProjetoFinaceiro.Model.Domain;
 using apiProjetoFinaceiro.Model.Imput;
 using apiProjetoFinaceiro.Model.View;
 
@@ -8,13 +9,13 @@ namespace apiProjetoFinaceiro.services
     {
         IEnumerable<UsuarioViewModel> ListaUsuarios();
 
-        Task<UsuarioViewModel> Logim(Login login);
+        Task<UsuarioViewModel> Logim(LoginInputModel login);
 
         Task<UsuarioViewModel> ObterUsuarioPorId(int Id);
 
-        Task<UsuarioViewModel> Create(UsuarioImputModel input);
+        Task<RespostaApi<UsuarioViewModel>> Create(UsuarioImputModel input);
 
-        Task Update(Usuario Usuario);
+        Task Update(UsuarioImputModel Usuario);
 
         Task Delete(int Id);
         Task<IEnumerable<CidadeViewModel>> BuscarCidades();

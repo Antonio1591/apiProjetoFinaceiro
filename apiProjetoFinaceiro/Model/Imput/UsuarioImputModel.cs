@@ -7,8 +7,9 @@ namespace apiProjetoFinaceiro.Model.Imput
     [NotMapped]
     public class UsuarioImputModel
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Nome do Usuario Obrigatorio")]
-        [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$", ErrorMessage = "Números e caracteres especiais não são permitidos no nome.")]
+        //[RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$", ErrorMessage = "Números e caracteres especiais não são permitidos no nome.")]
        
         public string Nome { get; set; }
         [Required(ErrorMessage = "Senha do Usuario Obrigatoria")]
@@ -17,7 +18,7 @@ namespace apiProjetoFinaceiro.Model.Imput
 
         [Required(ErrorMessage = "Email do Usuario Obrigatorio")]
         [StringLength(100, MinimumLength = 5, ErrorMessage = "O Email deve ter no mínimo 5 e no máximo 100 caracteres.")]
-        [RegularExpression(".+\\@.+\\..+", ErrorMessage = "Informe um email válido...")]
+        //[RegularExpression(".+\\@.+\\..+", ErrorMessage = "Informe um email válido...")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Telefone do Usuario Obrigatorio")]

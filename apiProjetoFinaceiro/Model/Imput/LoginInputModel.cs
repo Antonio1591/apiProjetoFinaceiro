@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace apiProjetoFinaceiro.Model.Domain
+namespace apiProjetoFinaceiro.Model.Imput
 {
-    public class Login
+    public class LoginInputModel
     {
-        protected Login() { }
-        public Login(string email, string senha)
+        protected LoginInputModel() { }
+        public LoginInputModel(string email, string senha)
         {
             Email = email;
             Senha = senha;

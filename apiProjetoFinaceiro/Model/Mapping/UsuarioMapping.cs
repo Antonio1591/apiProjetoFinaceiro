@@ -1,4 +1,5 @@
-﻿using apiProjetoFinaceiro.Model.Domain;
+﻿using apiProjetoFinaceiro.Model.ClasseDbSet;
+using apiProjetoFinaceiro.Model.Domain;
 using apiProjetoFinaceiro.Model.View;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,7 +7,7 @@ namespace apiProjetoFinaceiro.Model.Mapping
 {
     public static class UsuarioMapping
     {
-        public static UsuarioViewModel ParaViewModel(this Usuario usuario)
+        public static UsuarioViewModel ParaViewModel(this UsuarioDbSet usuario)
         {
             return new UsuarioViewModel()
             {

@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using apiProjetoFinaceiro.Model.Domain;
 using apiProjetoFinaceiro.Model.View;
 using apiProjetoFinaceiro.Model.Imput;
 using apiProjetoFinaceiro.services;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using apiProjetoFinaceiro.Model.ClasseDbSet;
+using apiProjetoFinaceiro.Model;
 
 namespace apiProjetoFinaceiro.Controllers
 {
@@ -26,14 +27,16 @@ namespace apiProjetoFinaceiro.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<UsuarioViewModel>> Logim([FromBody] Login login)
+        public async Task<ActionResult<UsuarioViewModel>> Logim([FromBody] LoginInputModel loginInput)
         {
-            if (login == null) return BadRequest();
-            return await _IUsuarioServices.Logim(login);      
+            var resultado=await _IUsuarioServices.Logim(loginInput);
+
+            if (resultado == null) return BadRequest("Usuario Invalido ou Senha Incorreta");
+            return resultado;      
 
         }
         [HttpGet("{Id}")]
-
+        
         public async Task<ActionResult<UsuarioViewModel>> Pessoa(int Id)
         {
             return await _IUsuarioServices.ObterUsuarioPorId(Id);
@@ -41,14 +44,16 @@ namespace apiProjetoFinaceiro.Controllers
 
         [HttpPost("Resultado")]
 
-        public async Task<ActionResult<Usuario>> AdicionarUsuario([FromBody] UsuarioImputModel usuario)
+        public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> AdicionarUsuario([FromBody] UsuarioImputModel usuarioInputModel)
         {
-            var newUsuario = await _IUsuarioServices.Create(usuario);
-            return CreatedAtAction(nameof(usuario), new { newUsuario.Id }, newUsuario);
+            var newUsuario = await _IUsuarioServices.Create(usuarioInputModel);
+            if (newUsuario.Erro)
+                return BadRequest(newUsuario.MenssagemErro);
+            return CreatedAtAction(nameof(usuarioInputModel), new { newUsuario.Dados.Id }, newUsuario.Dados);
         }
 
         [HttpDelete("{Id}")]
-        public async Task<ActionResult<Usuario>> DeletaUsuario(int Id)
+        public async Task<ActionResult<UsuarioDbSet>> DeletaUsuario(int Id)
         {
             var deletePessoa = _IUsuarioServices.ObterUsuarioPorId(Id);
             if (deletePessoa == null)
@@ -58,12 +63,12 @@ namespace apiProjetoFinaceiro.Controllers
             return NoContent();
         }
         [HttpPut]
-        public async Task<ActionResult<Usuario>> AtualizarUsuario(int Id, [FromBody] Usuario usuario)
+        public async Task<ActionResult<UsuarioViewModel>> AtualizarUsuario(int Id, [FromBody] UsuarioImputModel usuarioInputModel)
         {
-            if (Id != usuario.Id)
+            if (Id != usuarioInputModel.Id)
                 return BadRequest();
 
-            await _IUsuarioServices.Update(usuario);
+            await _IUsuarioServices.Update(usuarioInputModel);
             return NoContent();
         }
        
