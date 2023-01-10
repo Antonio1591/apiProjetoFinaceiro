@@ -9,14 +9,14 @@ namespace apiProjetoFinaceiro.services
     {
         IEnumerable<UsuarioViewModel> ListaUsuarios();
 
-        Task<UsuarioViewModel> Logim(LoginInputModel login);
+        Task<RespostaApi<UsuarioViewModel>> Logim(LoginInputModel login);
 
         Task<UsuarioViewModel> ObterUsuarioPorId(int Id);
 
         Task<RespostaApi<UsuarioViewModel>> Create(UsuarioImputModel input);
 
         Task Update(UsuarioImputModel Usuario);
-
+        Task <RespostaApi<UsuarioViewModel>> AlterarSenha(UsuarioImputModel Usuario);
         Task Delete(int Id);
         Task<IEnumerable<CidadeViewModel>> BuscarCidades();
         Task<IEnumerable<BairroViewModel>> BuscarBairros();

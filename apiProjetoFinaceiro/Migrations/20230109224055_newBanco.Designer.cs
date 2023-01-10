@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -10,9 +11,10 @@ using api.Data;
 namespace apiProjetoFinaceiro.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230109224055_newBanco")]
+    partial class newBanco
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,14 +88,19 @@ namespace apiProjetoFinaceiro.Migrations
                         .HasColumnType("Datetime(2)")
                         .HasColumnName("datamovimentacaolancamento");
 
-                    b.Property<string>("Situacao")
-                        .IsRequired()
-                        .HasColumnType("longtext")
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int")
                         .HasColumnName("situacao");
 
-                    b.Property<int>("TipoMovimentacaoid")
-                        .HasColumnType("int")
-                        .HasColumnName("tipo_movimentacaoid");
+                    b.Property<string>("TipoMovimentacao")
+                        .IsRequired()
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("tipo_movimentacao");
+
+                    b.Property<string>("TipoMovimentacaoDescricao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("tipo_movimentacao_descricao");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int")
@@ -106,39 +113,10 @@ namespace apiProjetoFinaceiro.Migrations
                     b.HasKey("Id")
                         .HasName("pk_movimentacao_finaceira");
 
-                    b.HasIndex("TipoMovimentacaoid")
-                        .HasDatabaseName("ix_movimentacao_finaceira_tipo_movimentacaoid");
-
                     b.HasIndex("UsuarioId")
                         .HasDatabaseName("ix_movimentacao_finaceira_usuario_id");
 
                     b.ToTable("movimentacao_finaceira", (string)null);
-                });
-
-            modelBuilder.Entity("apiProjetoFinaceiro.Model.Domain.TipoMovimentacao", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<int>("SituacaoEnum")
-                        .HasColumnType("int")
-                        .HasColumnName("situacao_enum");
-
-                    b.Property<string>("TipoDescriscao")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("tipo_descriscao");
-
-                    b.Property<int>("TipoOperacao")
-                        .HasColumnType("int")
-                        .HasColumnName("tipo_operacao");
-
-                    b.HasKey("id")
-                        .HasName("pk_tipo_movimentacao");
-
-                    b.ToTable("tipo_movimentacao", (string)null);
                 });
 
             modelBuilder.Entity("apiProjetoFinaceiro.Model.Domain.Usuario", b =>
@@ -206,21 +184,12 @@ namespace apiProjetoFinaceiro.Migrations
 
             modelBuilder.Entity("apiProjetoFinaceiro.Model.Domain.MovimentacaoFinanceira", b =>
                 {
-                    b.HasOne("apiProjetoFinaceiro.Model.Domain.TipoMovimentacao", "TipoMovimentacao")
-                        .WithMany()
-                        .HasForeignKey("TipoMovimentacaoid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_movimentacao_finaceira_tipo_movimentacao_tipo_movimentacaoid");
-
                     b.HasOne("apiProjetoFinaceiro.Model.Domain.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_movimentacao_finaceira_usuario_usuario_id");
-
-                    b.Navigation("TipoMovimentacao");
 
                     b.Navigation("Usuario");
                 });

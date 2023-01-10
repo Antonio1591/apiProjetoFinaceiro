@@ -7,9 +7,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 string stringDeConexao =builder.Configuration.GetConnectionString("conexaoMySQL");
-builder.Services.AddDbContext<DataContext>(opt => opt.UseMySql(stringDeConexao, ServerVersion.AutoDetect(stringDeConexao)));
+builder.Services.AddDbContext<DataContext>(opt => 
+opt.UseMySql(stringDeConexao, ServerVersion.AutoDetect(stringDeConexao))
+.UseSnakeCaseNamingConvention()
+);
 builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
-
+builder.Services.AddScoped<IMovimentacaoFinanceiraServices,MovimentacaoFinaceiraServices>();
 
 var app = builder.Build();
 

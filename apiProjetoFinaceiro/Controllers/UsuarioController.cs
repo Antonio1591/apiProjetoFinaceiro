@@ -2,8 +2,6 @@
 using apiProjetoFinaceiro.Model.View;
 using apiProjetoFinaceiro.Model.Imput;
 using apiProjetoFinaceiro.services;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using apiProjetoFinaceiro.Model.ClasseDbSet;
 using apiProjetoFinaceiro.Model;
 
 namespace apiProjetoFinaceiro.Controllers
@@ -26,15 +24,6 @@ namespace apiProjetoFinaceiro.Controllers
             return _IUsuarioServices.ListaUsuarios();
         }
 
-        [HttpPost("Login")]
-        public async Task<ActionResult<UsuarioViewModel>> Logim([FromBody] LoginInputModel loginInput)
-        {
-            var resultado=await _IUsuarioServices.Logim(loginInput);
-
-            if (resultado == null) return BadRequest("Usuario Invalido ou Senha Incorreta");
-            return resultado;      
-
-        }
         [HttpGet("{Id}")]
         
         public async Task<ActionResult<UsuarioViewModel>> Pessoa(int Id)
@@ -42,18 +31,22 @@ namespace apiProjetoFinaceiro.Controllers
             return await _IUsuarioServices.ObterUsuarioPorId(Id);
         }
 
-        [HttpPost("Resultado")]
+        [HttpPost("CadastrarUsuario")]
 
         public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> AdicionarUsuario([FromBody] UsuarioImputModel usuarioInputModel)
         {
             var newUsuario = await _IUsuarioServices.Create(usuarioInputModel);
+
             if (newUsuario.Erro)
-                return BadRequest(newUsuario.MenssagemErro);
-            return CreatedAtAction(nameof(usuarioInputModel), new { newUsuario.Dados.Id }, newUsuario.Dados);
+                return BadRequest(newUsuario.MenssagensErros);
+
+            //return CreatedAtAction(nameof(UsuarioViewModel), new { newUsuario.Dados.Id }, newUsuario.Dados);
+            return new RespostaApi<UsuarioViewModel> { Dados = newUsuario.Dados };
+
         }
 
         [HttpDelete("{Id}")]
-        public async Task<ActionResult<UsuarioDbSet>> DeletaUsuario(int Id)
+        public async Task<ActionResult<UsuarioViewModel>> DeletaUsuario(int Id)
         {
             var deletePessoa = _IUsuarioServices.ObterUsuarioPorId(Id);
             if (deletePessoa == null)

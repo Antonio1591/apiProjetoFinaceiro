@@ -5,7 +5,8 @@ namespace apiProjetoFinaceiro.Model
     {
         public TViwerModel Dados  { get; set;}
         public bool Erro { get; set; }
-        public List<string> MenssagemErro { get; set; }= new List<string>();
+        public List<string> MenssagensErros { get; set; }= new List<string>();
+       
 
     }
 }

@@ -2,7 +2,7 @@
 
 namespace apiProjetoFinaceiro.Model.Domain
 {
-    public class Cidade
+    public class Cidade:Entidade
     {
         protected Cidade()
         {
@@ -11,6 +11,12 @@ namespace apiProjetoFinaceiro.Model.Domain
 
         public Cidade(string nome, string cep, string situacao)
         {
+            if (nome.Length <= 3 || string.IsNullOrEmpty(nome))
+                AddErro("Nome da Cidade não encontrado");
+            if (cep.Length <= 3 || string.IsNullOrEmpty(cep))
+                AddErro("Cep não encontrado");
+            if (!EhValido)
+                return;
             Nome = nome;
             Cep = cep;
             Situacao = situacao;

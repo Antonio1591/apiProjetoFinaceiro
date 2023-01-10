@@ -1,6 +1,5 @@
 ﻿using api.Data;
 using apiProjetoFinaceiro.Model;
-using apiProjetoFinaceiro.Model.ClasseDbSet;
 using apiProjetoFinaceiro.Model.Domain;
 using apiProjetoFinaceiro.Model.Imput;
 using apiProjetoFinaceiro.Model.Mapping;
@@ -8,6 +7,7 @@ using apiProjetoFinaceiro.Model.View;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.Formula.Functions;
 
 namespace apiProjetoFinaceiro.services
 {
@@ -15,20 +15,50 @@ namespace apiProjetoFinaceiro.services
     public class UsuarioServices : IUsuarioServices
     {
         public readonly DataContext _context;
-
+        List<string> InformacoesNaoEncontrada = new List<string>();
         public UsuarioServices(DataContext context)
         {
             _context = context;
         }
+
         public async Task<RespostaApi<UsuarioViewModel>> Create(UsuarioImputModel input)
         {
             Cidade cidade = await _context.cidade.FindAsync(input.Cidade.Id);
-            if (cidade == null) return null;
+            if (cidade == null)
+            {
+                InformacoesNaoEncontrada.Add("Cidade não encontrada");
+                return new RespostaApi<UsuarioViewModel>
+                {
+                    MenssagensErros = InformacoesNaoEncontrada,
+                    Erro = true,
+                };
+            }
             Bairro bairro = await _context.bairro.FindAsync(input.Bairro.Id);
-            if (bairro == null) return null;
+            if (bairro == null)
+            {
+                InformacoesNaoEncontrada.Add("Bairro não encontrada");
+                return new RespostaApi<UsuarioViewModel>
+                {
+                    MenssagensErros = InformacoesNaoEncontrada,
+                    Erro = true,
+
+                };
+            }
+
+            var ValidacaoCpfEmail = await _context.usuario.AnyAsync(U => U.CPF == input.CPF || U.Email == input.Email);
+            if (ValidacaoCpfEmail)
+            {
+                InformacoesNaoEncontrada.Add("CPF ou Email, Já cadastrado");
+                return new RespostaApi<UsuarioViewModel>
+                {
+                    MenssagensErros = InformacoesNaoEncontrada,
+                    Erro = true,
+
+                };
+            }
             //var usuario = new Usuario(input.Nome, input.Senha, input.Email, input.Telefone, cidade, bairro, input.CPF, input.DataNascimento, SituacaoEnum.ATIVO.ToString());
-            var usuario = new Usuario("", "123", "", input.Telefone, cidade, bairro, input.CPF, input.DataNascimento, SituacaoEnum.ATIVO.ToString());
-            //if (usuario == null) usuario.AddErro("O usuario deve ter todos os campos preenchidos!");
+            var usuario = new Usuario(input.Nome, input.Senha, input.Email, input.Telefone, cidade, bairro, input.CPF, input.DataNascimento, SituacaoEnum.ATIVO.ToString());
+
             if (!usuario.EhValido)
             {
                 //RespostaApi<List<string>> RetornoErro = new RespostaApi<List<string>>;
@@ -36,16 +66,37 @@ namespace apiProjetoFinaceiro.services
 
                 return new RespostaApi<UsuarioViewModel>
                 {
-                    MenssagemErro = usuario.Erros,
-                    Erro=true,
+                    MenssagensErros = usuario.Erros,
+                    Erro = true,
 
                 };
             }
-            var novoUsuario = new UsuarioDbSet(usuario.Nome, usuario.Senha, usuario.Email, usuario.Telefone, cidade, bairro, usuario.CPF, usuario.DataNascimento, SituacaoEnum.ATIVO.ToString());
+            var novoUsuario = new Usuario(usuario.Nome, usuario.Senha, usuario.Email, usuario.Telefone, cidade, bairro, usuario.CPF, usuario.DataNascimento, SituacaoEnum.ATIVO.ToString());
+
             _context.usuario.Add(novoUsuario);
             await _context.SaveChangesAsync();
             return new RespostaApi<UsuarioViewModel>
             { Dados = novoUsuario.ParaViewModel() };
+        }
+        public async Task<RespostaApi<UsuarioViewModel>> Logim(LoginInputModel login)
+        {
+            var usuario = await _context.usuario.Include(p => p.Bairro)
+                .Include(p => p.Cidade)
+                .FirstOrDefaultAsync(U => U.Email == login.Email && U.Senha == login.Senha);
+            if (usuario == null)
+            {
+                InformacoesNaoEncontrada.Add("Usuario não Encontrado");
+                return new RespostaApi<UsuarioViewModel>
+                {
+                    MenssagensErros = InformacoesNaoEncontrada,
+                    Erro = true,
+                };
+
+            }
+            return new RespostaApi<UsuarioViewModel>
+            { Dados = usuario.ParaViewModel() };
+
+
         }
 
         public async Task Delete(int id)
@@ -75,23 +126,33 @@ namespace apiProjetoFinaceiro.services
             return usuario.ParaViewModel();
         }
 
-        public async Task<UsuarioViewModel> Logim(LoginInputModel login)
-        {
-            var usuario = await _context.usuario.Include(p => p.Bairro)
-                .Include(p => p.Cidade)
-                .FirstOrDefaultAsync(U => U.Email == login.Email && U.Senha == login.Senha);
-            if (usuario == null) return null;
-
-            return usuario.ParaViewModel();
-
-
-        }
-
         public async Task Update(UsuarioImputModel usuarioInputModel)
         {
             //_context.Entry(usuario).State = EntityState.Modified;
             _context.Update(usuarioInputModel);
             await _context.SaveChangesAsync();
+        }
+        public async Task<RespostaApi<UsuarioViewModel>> AlterarSenha(UsuarioImputModel usuarioInputModel)
+        {
+            var usuario = await _context.usuario.Include(p => p.Bairro)
+                 .Include(p => p.Cidade)
+                 .FirstOrDefaultAsync(U => U.Email == usuarioInputModel.Email && U.CPF == usuarioInputModel.CPF);
+
+            usuario.AlterarSenha(usuarioInputModel.Senha);
+            if (!usuario.EhValido)
+            {
+                return new RespostaApi<UsuarioViewModel>
+                {
+                    MenssagensErros = usuario.Erros,
+                    Erro = true,
+
+                };
+
+            }
+            _context.Update(usuario);
+            await _context.SaveChangesAsync();
+            return new RespostaApi<UsuarioViewModel>
+            { Dados = usuario.ParaViewModel() };
         }
         public async Task<IEnumerable<CidadeViewModel>> BuscarCidades()
         {

@@ -2,7 +2,7 @@
 
 namespace apiProjetoFinaceiro.Model.Domain
 {
-    [NotMapped]
+
     public abstract class Entidade
     {
         public List<string> Erros = new List<string>();
@@ -12,6 +12,8 @@ namespace apiProjetoFinaceiro.Model.Domain
             Erros.Add(erro);
             
         }
+
+        [NotMapped]
         public  bool EhValido => !Erros.Any();
 
 

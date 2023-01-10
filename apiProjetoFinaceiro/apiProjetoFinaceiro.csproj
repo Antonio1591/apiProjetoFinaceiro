@@ -25,6 +25,7 @@
     </PackageReference>
     <PackageReference Include="NPOI" Version="2.6.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+	  <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
