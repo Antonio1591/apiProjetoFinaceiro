@@ -12,7 +12,7 @@ namespace apiProjetoFinaceiro.Model.Mapping
             {
                 TipoDescriscao = tipoMovimentacao.TipoDescriscao,
                 TipoOperacao = tipoMovimentacao.TipoOperacao.ToString(),
-                Situacao = tipoMovimentacao.SituacaoEnum.ToString(),
+                Situacao = tipoMovimentacao.Situacao.ToString(),
             };
         }
     }

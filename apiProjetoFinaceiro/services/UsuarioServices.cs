@@ -16,6 +16,7 @@ namespace apiProjetoFinaceiro.services
     {
         public readonly DataContext _context;
         List<string> InformacoesNaoEncontrada = new List<string>();
+
         public UsuarioServices(DataContext context)
         {
             _context = context;
@@ -85,7 +86,7 @@ namespace apiProjetoFinaceiro.services
                 .FirstOrDefaultAsync(U => U.Email == login.Email && U.Senha == login.Senha);
             if (usuario == null)
             {
-                InformacoesNaoEncontrada.Add("Usuario não Encontrado");
+                InformacoesNaoEncontrada.Add("Dados não Encontrado");
                 return new RespostaApi<UsuarioViewModel>
                 {
                     MenssagensErros = InformacoesNaoEncontrada,

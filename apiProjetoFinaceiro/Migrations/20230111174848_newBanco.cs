@@ -50,6 +50,24 @@ namespace apiProjetoFinaceiro.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "tipo_movimentacao",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    tipo_operacao = table.Column<int>(type: "int", nullable: false),
+                    tipo_descriscao = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    situacao = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_tipo_movimentacao", x => x.id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "usuario",
                 columns: table => new
                 {
@@ -98,16 +116,20 @@ namespace apiProjetoFinaceiro.Migrations
                     usuario_id = table.Column<int>(type: "int", nullable: false),
                     datamovimentacaolancamento = table.Column<DateTime>(type: "Datetime(2)", nullable: false),
                     datamovimentacao_entrada = table.Column<DateTime>(type: "Datetime(2)", nullable: false),
-                    valor_movimentacao = table.Column<decimal>(type: "decimal(15,2)", nullable: false),
-                    tipo_movimentacao = table.Column<string>(type: "varchar(2)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    tipo_movimentacao_descricao = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    situacao = table.Column<int>(type: "int", nullable: false)
+                    valor_movimentacao = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    tipo_movimentacao_id = table.Column<int>(type: "int", nullable: false),
+                    situacao = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_movimentacao_finaceira", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_movimentacao_finaceira_tipo_movimentacao_tipo_movimentacao_id",
+                        column: x => x.tipo_movimentacao_id,
+                        principalTable: "tipo_movimentacao",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_movimentacao_finaceira_usuario_usuario_id",
                         column: x => x.usuario_id,
@@ -116,6 +138,11 @@ namespace apiProjetoFinaceiro.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_movimentacao_finaceira_tipo_movimentacao_id",
+                table: "movimentacao_finaceira",
+                column: "tipo_movimentacao_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_movimentacao_finaceira_usuario_id",
@@ -137,6 +164,9 @@ namespace apiProjetoFinaceiro.Migrations
         {
             migrationBuilder.DropTable(
                 name: "movimentacao_finaceira");
+
+            migrationBuilder.DropTable(
+                name: "tipo_movimentacao");
 
             migrationBuilder.DropTable(
                 name: "usuario");

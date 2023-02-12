@@ -11,8 +11,8 @@ using api.Data;
 namespace apiProjetoFinaceiro.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230110003210_newTable")]
-    partial class newTable
+    [Migration("20230111174848_newBanco")]
+    partial class newBanco
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,23 +93,23 @@ namespace apiProjetoFinaceiro.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("situacao");
 
-                    b.Property<int>("TipoMovimentacaoid")
+                    b.Property<int>("TipoMovimentacaoId")
                         .HasColumnType("int")
-                        .HasColumnName("tipo_movimentacaoid");
+                        .HasColumnName("tipo_movimentacao_id");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int")
                         .HasColumnName("usuario_id");
 
                     b.Property<decimal>("ValorMovimentacao")
-                        .HasColumnType("decimal(15,2)")
+                        .HasColumnType("decimal(10,2)")
                         .HasColumnName("valor_movimentacao");
 
                     b.HasKey("Id")
                         .HasName("pk_movimentacao_finaceira");
 
-                    b.HasIndex("TipoMovimentacaoid")
-                        .HasDatabaseName("ix_movimentacao_finaceira_tipo_movimentacaoid");
+                    b.HasIndex("TipoMovimentacaoId")
+                        .HasDatabaseName("ix_movimentacao_finaceira_tipo_movimentacao_id");
 
                     b.HasIndex("UsuarioId")
                         .HasDatabaseName("ix_movimentacao_finaceira_usuario_id");
@@ -119,14 +119,16 @@ namespace apiProjetoFinaceiro.Migrations
 
             modelBuilder.Entity("apiProjetoFinaceiro.Model.Domain.TipoMovimentacao", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .IsUnicode(true)
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("SituacaoEnum")
-                        .HasColumnType("int")
-                        .HasColumnName("situacao_enum");
+                    b.Property<string>("Situacao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("situacao");
 
                     b.Property<string>("TipoDescriscao")
                         .IsRequired()
@@ -137,7 +139,7 @@ namespace apiProjetoFinaceiro.Migrations
                         .HasColumnType("int")
                         .HasColumnName("tipo_operacao");
 
-                    b.HasKey("id")
+                    b.HasKey("Id")
                         .HasName("pk_tipo_movimentacao");
 
                     b.ToTable("tipo_movimentacao", (string)null);
@@ -210,10 +212,10 @@ namespace apiProjetoFinaceiro.Migrations
                 {
                     b.HasOne("apiProjetoFinaceiro.Model.Domain.TipoMovimentacao", "TipoMovimentacao")
                         .WithMany()
-                        .HasForeignKey("TipoMovimentacaoid")
+                        .HasForeignKey("TipoMovimentacaoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_movimentacao_finaceira_tipo_movimentacao_tipo_movimentacaoid");
+                        .HasConstraintName("fk_movimentacao_finaceira_tipo_movimentacao_tipo_movimentacao_id");
 
                     b.HasOne("apiProjetoFinaceiro.Model.Domain.Usuario", "Usuario")
                         .WithMany()

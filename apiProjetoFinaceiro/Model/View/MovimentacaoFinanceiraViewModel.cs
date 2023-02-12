@@ -12,3 +12,4 @@
         public SituacaoEnum Situacao { get; set; }
     }
 }
+

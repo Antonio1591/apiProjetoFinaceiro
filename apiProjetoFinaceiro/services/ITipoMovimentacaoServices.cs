@@ -6,8 +6,8 @@ namespace apiProjetoFinaceiro.services
 {
     public interface ITipoMovimentacaoServices
     {
-        Task<RespostaApi<MovimentacaoFinanceiraViewModel>> NovaMovimentacao(MovimentacaoFinaceiraInputModel movimentacaoInputModel);
-        Task<RespostaApi<MovimentacaoFinanceiraViewModel>> AtualizarMovimentacao(MovimentacaoFinaceiraInputModel movimentacaoInputModel);
-        IEnumerable<MovimentacaoFinanceiraViewModel> BuscarMovimentacao();
+        Task<RespostaApi<TipoMovimentacaoViewModel>> CadastroTipo(TipoMovimentacaoInputModel input);
+        Task<RespostaApi<TipoMovimentacaoViewModel>> AtualizarTipo(TipoMovimentacaoInputModel input);
+        IEnumerable<TipoMovimentacaoViewModel> BuscarTipos();
     }
 }

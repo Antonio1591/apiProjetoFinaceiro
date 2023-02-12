@@ -1,9 +1,11 @@
-﻿namespace apiProjetoFinaceiro.Model.Domain
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace apiProjetoFinaceiro.Model.Domain
 {
     public class MovimentacaoFinanceira : Entidade
     {
         protected MovimentacaoFinanceira(){}
-        public MovimentacaoFinanceira(Usuario idUsuario, DateTime datamovimentacaoEntrada, decimal valorMovimentacao, TipoMovimentacao tipoMovimentacao, SituacaoEnum situacao)
+        public MovimentacaoFinanceira(IdentityUser idUsuario, DateTime datamovimentacaoEntrada, decimal valorMovimentacao, TipoMovimentacao tipoMovimentacao, SituacaoEnum situacao)
         {
             if (string.IsNullOrEmpty(ValorMovimentacao.ToString()) || ValorMovimentacao <= 0)
                 AddErro("Favor informar um valor valido");
@@ -23,7 +25,7 @@
         }
 
         public int Id { get;private set; }
-        public Usuario Usuario { get; private set; }
+        public IdentityUser Usuario { get; private set; }
         public DateTime Datamovimentacaolancamento { get; private set; }
         public DateTime DatamovimentacaoEntrada { get; private set; }
         public decimal ValorMovimentacao { get; private set; }

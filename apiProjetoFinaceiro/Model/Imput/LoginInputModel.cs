@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using apiProjetoFinaceiro.Model.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace apiProjetoFinaceiro.Model.Imput
 {
@@ -16,7 +17,8 @@ namespace apiProjetoFinaceiro.Model.Imput
         public string Email { get;private set; }
         [Required]
         public string Senha { get;private set; }
-       
+      
+
 
     }
 }

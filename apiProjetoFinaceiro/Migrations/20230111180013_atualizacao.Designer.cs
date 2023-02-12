@@ -11,8 +11,8 @@ using api.Data;
 namespace apiProjetoFinaceiro.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230109225317_correcaoCollun")]
-    partial class correcaoCollun
+    [Migration("20230111180013_atualizacao")]
+    partial class atualizacao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,31 +93,57 @@ namespace apiProjetoFinaceiro.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("situacao");
 
-                    b.Property<string>("TipoMovimentacao")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("tipo_movimentacao");
-
-                    b.Property<string>("TipoMovimentacaoDescricao")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("tipo_movimentacao_descricao");
+                    b.Property<int>("TipoMovimentacaoId")
+                        .HasColumnType("int")
+                        .HasColumnName("tipo_movimentacao_id");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int")
                         .HasColumnName("usuario_id");
 
                     b.Property<decimal>("ValorMovimentacao")
-                        .HasColumnType("decimal(15,2)")
+                        .HasColumnType("decimal(10,2)")
                         .HasColumnName("valor_movimentacao");
 
                     b.HasKey("Id")
                         .HasName("pk_movimentacao_finaceira");
 
+                    b.HasIndex("TipoMovimentacaoId")
+                        .HasDatabaseName("ix_movimentacao_finaceira_tipo_movimentacao_id");
+
                     b.HasIndex("UsuarioId")
                         .HasDatabaseName("ix_movimentacao_finaceira_usuario_id");
 
                     b.ToTable("movimentacao_finaceira", (string)null);
+                });
+
+            modelBuilder.Entity("apiProjetoFinaceiro.Model.Domain.TipoMovimentacao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .IsUnicode(true)
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Situacao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("situacao");
+
+                    b.Property<string>("TipoDescriscao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("tipo_descriscao");
+
+                    b.Property<string>("TipoOperacao")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("tipo_operacao");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tipo_movimentacao");
+
+                    b.ToTable("tipo_movimentacao", (string)null);
                 });
 
             modelBuilder.Entity("apiProjetoFinaceiro.Model.Domain.Usuario", b =>
@@ -185,12 +211,21 @@ namespace apiProjetoFinaceiro.Migrations
 
             modelBuilder.Entity("apiProjetoFinaceiro.Model.Domain.MovimentacaoFinanceira", b =>
                 {
+                    b.HasOne("apiProjetoFinaceiro.Model.Domain.TipoMovimentacao", "TipoMovimentacao")
+                        .WithMany()
+                        .HasForeignKey("TipoMovimentacaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_movimentacao_finaceira_tipo_movimentacao_tipo_movimentacao_id");
+
                     b.HasOne("apiProjetoFinaceiro.Model.Domain.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_movimentacao_finaceira_usuario_usuario_id");
+
+                    b.Navigation("TipoMovimentacao");
 
                     b.Navigation("Usuario");
                 });

@@ -22,28 +22,8 @@ namespace apiProjetoFinaceiro.Data.Mapping
                          .IsRequired().
                          HasColumnType("Date");
 
-        }
-    }
-    public class MovimentacaoFinaceiraMapping : IEntityTypeConfiguration<MovimentacaoFinanceira>
-    {
-        public void Configure(EntityTypeBuilder<MovimentacaoFinanceira> builder)
-        {
-            builder.Property(U => U.Id).HasColumnType("int").IsRequired().IsUnicode();
-            builder.HasKey(U => U.Id);
 
-            builder.Property(U => U.DatamovimentacaoEntrada)
-                         .IsRequired().
-                         HasColumnType("Datetime(2)");
-            builder.Property(U => U.Datamovimentacaolancamento)
-                        .IsRequired().
-                        HasColumnType("Datetime(2)");
-            builder.Property(M => M.ValorMovimentacao)
-                            .IsRequired()
-                            .HasColumnType("decimal(15,2)");
-            builder.Property(M => M.Situacao)
-                            .IsRequired()
-                            .HasColumnType("longtext");
-           
         }
     }
+  
 }

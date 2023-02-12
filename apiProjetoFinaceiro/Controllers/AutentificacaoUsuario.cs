@@ -1,13 +1,16 @@
 ﻿using apiProjetoFinaceiro.Model;
+using apiProjetoFinaceiro.Model.Domain.UsuarioIdentityRepositorio;
 using apiProjetoFinaceiro.Model.Imput;
 using apiProjetoFinaceiro.Model.View;
 using apiProjetoFinaceiro.services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apiProjetoFinaceiro.Controllers
 {
 
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class AutentificacaoUsuario:ControllerBase
     {
@@ -20,6 +23,7 @@ namespace apiProjetoFinaceiro.Controllers
         }
 
         [HttpPost("Login")]
+        [AllowAnonymous]
         public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> Logim([FromBody] LoginInputModel loginInput)
         {
             var resultado = await _IUsuarioServices.Logim(loginInput);
@@ -28,9 +32,10 @@ namespace apiProjetoFinaceiro.Controllers
             {
                 return BadRequest(resultado.MenssagensErros);
             }
-            return new RespostaApi <UsuarioViewModel>{Dados= resultado.Dados };
+            return new RespostaApi<UsuarioViewModel> { Dados = resultado.Dados };
 
         }
+
         [HttpPut("AlterarSenha")]
         public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> AlterarSenha([FromBody] UsuarioImputModel usuarioImputModel)
         {
