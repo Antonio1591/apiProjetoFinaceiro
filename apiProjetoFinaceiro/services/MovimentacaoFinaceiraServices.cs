@@ -13,24 +13,22 @@ namespace apiProjetoFinaceiro.services
     public class MovimentacaoFinaceiraServices : IMovimentacaoFinanceiraServices
     {
         private readonly DataContext _context;
-        private readonly Usuario _usuario;
+        private readonly IAspNetUser _aspNetUser;
+        private readonly ITipoMovimentacaoServices _tipoMovimentacaoServices;
 
-        public MovimentacaoFinaceiraServices(DataContext Context)
+        public MovimentacaoFinaceiraServices(DataContext context, IAspNetUser aspNetUser, ITipoMovimentacaoServices tipoMovimentacaoServices)
         {
-            _context = Context;
+            _context = context;
+            _aspNetUser = aspNetUser;
+            _tipoMovimentacaoServices = tipoMovimentacaoServices;
         }
-        public async Task<RespostaApi<MovimentacaoFinanceiraViewModel>> NovaMovimentacao(MovimentacaoFinaceiraInputModel input,IdentityUser user)
+
+        public async Task<RespostaApi<MovimentacaoFinanceiraViewModel>> NovaMovimentacao(MovimentacaoFinanceiraInputModel input)
         {
-            //Usuario usuario = await _context.usuario.FindAsync(input.Usuario.Id);
-            //if (!usuario.EhValido)
-            //{
-            //    return new RespostaApi<MovimentacaoFinanceiraViewModel>
-            //    {
-            //        MenssagensErros = usuario.Erros,
-            //        Erro = true
-            //    };
-            //}
-            MovimentacaoFinanceira movimentacaoFinaceira = new MovimentacaoFinanceira(user, input.DatamovimentacaoEntrada, input.ValorMovimentacao, input.TipoMovimentacao,SituacaoEnum.ATIVO);
+            var idUsuarioIdentity = _aspNetUser.ObterUserId();
+            TipoMovimentacao? tipoMovimentacao = await _context.tipoMovimentacao.FirstOrDefaultAsync(T => T.IdUsuarioIdentity == idUsuarioIdentity || T.Id == input.TipoMovimentacaoId);
+
+            MovimentacaoFinanceira movimentacaoFinaceira = new MovimentacaoFinanceira(idUsuarioIdentity, input.DatamovimentacaoEntrada, input.ValorMovimentacao, tipoMovimentacao, SituacaoEnum.ATIVO);
             if (!movimentacaoFinaceira.EhValido)
             {
                 return new RespostaApi<MovimentacaoFinanceiraViewModel>
@@ -44,10 +42,12 @@ namespace apiProjetoFinaceiro.services
             return new RespostaApi<MovimentacaoFinanceiraViewModel>
             { Dados = movimentacaoFinaceira.ParaViewModel() };
         }
-        public async Task<RespostaApi<MovimentacaoFinanceiraViewModel>> AtualizarMovimentacao(MovimentacaoFinaceiraInputModel input)
+        public async Task<RespostaApi<MovimentacaoFinanceiraViewModel>> AtualizarMovimentacao(MovimentacaoFinanceiraInputModel input)
         {
-            var movimentacaoFinaceira = await _context.movimentacaoFinaceira.FirstOrDefaultAsync(M => M.Id == input.Id);
-            movimentacaoFinaceira.alterarMovimentacao(input.ValorMovimentacao, input.TipoMovimentacao, input.Situacao);
+            var idUsuarioIdentity = _aspNetUser.ObterUserId();
+            TipoMovimentacao? tipoMovimentacao = await _context.tipoMovimentacao.FirstOrDefaultAsync(T => T.IdUsuarioIdentity == idUsuarioIdentity || T.Id == input.TipoMovimentacaoId);
+            var movimentacaoFinaceira = await _context.movimentacaoFinaceira.FirstOrDefaultAsync(M => M.IdUsuarioIdentity== idUsuarioIdentity ||  M.DatamovimentacaoEntrada==input.DatamovimentacaoEntrada || M.ValorMovimentacao == input.ValorMovimentacao || M.TipoMovimentacao == tipoMovimentacao || M.Situacao==input.Situacao);
+            movimentacaoFinaceira.alterarMovimentacao(input.ValorMovimentacao, tipoMovimentacao, input.Situacao);
             if (!movimentacaoFinaceira.EhValido)
                 return new RespostaApi<MovimentacaoFinanceiraViewModel>
                 {
@@ -61,12 +61,13 @@ namespace apiProjetoFinaceiro.services
                 Dados = movimentacaoFinaceira.ParaViewModel(),
             };
         }
-        public IEnumerable<MovimentacaoFinanceiraViewModel> BuscarMovimentacao(IdentityUser user)
-        {
+        public IEnumerable<MovimentacaoFinanceiraViewModel> BuscarMovimentacao()
+        {       
+            var idUsuarioIdentity = _aspNetUser.ObterUserId();
             IEnumerable<MovimentacaoFinanceiraViewModel> movimentosFinaceiros = _context.movimentacaoFinaceira.Include(T=>T.TipoMovimentacao)
                                                                                                                .ToList()
-                                                                                                               .Where(M=> M.Usuario.Email == user.Email)
-                                                                                                               .Select(P => P.ParaViewModel());
+                                                                                                               .Where(M=> M.IdUsuarioIdentity == idUsuarioIdentity)
+                                                                                                               .Select(P=> P.ParaViewModel());
 
             return movimentosFinaceiros;
         }

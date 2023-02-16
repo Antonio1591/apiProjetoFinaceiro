@@ -10,6 +10,7 @@ namespace apiProjetoFinaceiro.Model.Mapping
 
             return new TipoMovimentacaoViewModel
             {
+                Id = tipoMovimentacao.Id,
                 TipoDescriscao = tipoMovimentacao.TipoDescriscao,
                 TipoOperacao = tipoMovimentacao.TipoOperacao.ToString(),
                 Situacao = tipoMovimentacao.Situacao.ToString(),

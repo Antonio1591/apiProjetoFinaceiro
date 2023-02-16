@@ -5,18 +5,18 @@ namespace apiProjetoFinaceiro.Model.Domain
     public class MovimentacaoFinanceira : Entidade
     {
         protected MovimentacaoFinanceira(){}
-        public MovimentacaoFinanceira(IdentityUser idUsuario, DateTime datamovimentacaoEntrada, decimal valorMovimentacao, TipoMovimentacao tipoMovimentacao, SituacaoEnum situacao)
+        public MovimentacaoFinanceira(Guid idUsuarioIdentity, DateTime datamovimentacaoEntrada, decimal valorMovimentacao, TipoMovimentacao tipoMovimentacao, SituacaoEnum situacao)
         {
-            if (string.IsNullOrEmpty(ValorMovimentacao.ToString()) || ValorMovimentacao <= 0)
+            if (string.IsNullOrEmpty(valorMovimentacao.ToString()) || valorMovimentacao <= 0)
                 AddErro("Favor informar um valor valido");
-            if (DatamovimentacaoEntrada.Year < DateTime.Now.Year - 100)
+            if (datamovimentacaoEntrada.Year < DateTime.Now.Year - 100)
                 AddErro("Favor informa uma data valida");
 
-            if (string.IsNullOrEmpty(Situacao.ToString()))
+            if (string.IsNullOrEmpty(situacao.ToString()))
                 AddErro("Informe a situação da movimentação");
             if (!EhValido)
                 return;
-            Usuario = idUsuario;
+            IdUsuarioIdentity = idUsuarioIdentity;
             Datamovimentacaolancamento = DateTime.Now;
             DatamovimentacaoEntrada = datamovimentacaoEntrada;
             ValorMovimentacao = valorMovimentacao;
@@ -25,7 +25,7 @@ namespace apiProjetoFinaceiro.Model.Domain
         }
 
         public int Id { get;private set; }
-        public IdentityUser Usuario { get; private set; }
+        public Guid IdUsuarioIdentity { get; private set; }
         public DateTime Datamovimentacaolancamento { get; private set; }
         public DateTime DatamovimentacaoEntrada { get; private set; }
         public decimal ValorMovimentacao { get; private set; }

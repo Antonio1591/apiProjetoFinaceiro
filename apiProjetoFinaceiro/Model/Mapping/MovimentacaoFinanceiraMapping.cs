@@ -6,20 +6,18 @@ namespace apiProjetoFinaceiro.Model.Mapping
 {
     public static class MovimentacaoFinanceiraMapping
     {
-        public static MovimentacaoFinanceiraViewModel ParaViewModel(this MovimentacaoFinanceira movimentacaoFinaceira, IdentityUser user)
+        public static MovimentacaoFinanceiraViewModel ParaViewModel(this MovimentacaoFinanceira movimentacaoFinaceira)
         {
             return new MovimentacaoFinanceiraViewModel
             {
                 Id = movimentacaoFinaceira.Id,
-                NomeUsuario=user.UserName,
-                DatamovimentacaoEntrada=movimentacaoFinaceira.DatamovimentacaoEntrada,
-                ValorMovimentacao=movimentacaoFinaceira.ValorMovimentacao,
+                DatamovimentacaoEntrada = movimentacaoFinaceira.DatamovimentacaoEntrada,
+                ValorMovimentacao = movimentacaoFinaceira.ValorMovimentacao,
+                TipoMovimentacaoId = movimentacaoFinaceira.TipoMovimentacao.Id,
                 TipoOperacao=movimentacaoFinaceira.TipoMovimentacao.TipoOperacao.ToString(),
                 TipoMovimentacaoDescriscao=movimentacaoFinaceira.TipoMovimentacao.TipoDescriscao,
-                Situacao=movimentacaoFinaceira.Situacao,
+                Situacao=movimentacaoFinaceira.Situacao
             
-               
-
             };
         }
     }

@@ -5,9 +5,6 @@ namespace api.Data
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-        public DbSet<Usuario> usuario { get; set; }
-        public DbSet<Cidade> cidade { get; set; }
-        public DbSet<Bairro> bairro { get; set; }
         public DbSet<MovimentacaoFinanceira> movimentacaoFinaceira { get; set; }
         public DbSet<TipoMovimentacao> tipoMovimentacao { get; set; }
 

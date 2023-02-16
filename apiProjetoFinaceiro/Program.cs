@@ -62,12 +62,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
         .AddEntityFrameworkStores<IdentityDataContext>()
         
         .AddDefaultTokenProviders();
-
-builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
 builder.Services.AddScoped<IMovimentacaoFinanceiraServices,MovimentacaoFinaceiraServices>();
 builder.Services.AddScoped<ITipoMovimentacaoServices, TipoMovimentacaoServices>();
 builder.Services.AddScoped<IIdentityUsuarioServices, IdentityUsuarioServices>();
-
+builder.Services.AddScoped<IAspNetUser, AspNetUser>();
+builder.Services.AddScoped<HttpContextAccessor>();
 
 var app = builder.Build();
 

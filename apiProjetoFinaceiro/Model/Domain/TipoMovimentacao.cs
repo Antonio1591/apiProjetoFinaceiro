@@ -3,20 +3,23 @@
     public class TipoMovimentacao : Entidade
     {
         protected TipoMovimentacao(){}
-        public TipoMovimentacao(TipoMovimentacaoEnum tipoOperacao, string tipoDescriscao, SituacaoEnum situacaoEnum)
+        public TipoMovimentacao(Guid idUsuarioIdentity,TipoMovimentacaoEnum tipoOperacao, string tipoDescriscao, SituacaoEnum situacaoEnum)
         {
 
-            if (string.IsNullOrEmpty(TipoOperacao.ToString()))
+            if (string.IsNullOrEmpty(tipoOperacao.ToString()))
                 AddErro("Informe o tipo da movimentação (E para entrada e S para saida");
-            if (string.IsNullOrEmpty(TipoDescriscao))
+            if (string.IsNullOrEmpty(tipoDescriscao))
                 AddErro("Informe o nome da movimentação");
-            if(!EhValido)
+            if (!EhValido)
+                return;
+            IdUsuarioIdentity = idUsuarioIdentity;
             TipoOperacao = tipoOperacao;
             TipoDescriscao = tipoDescriscao;
             Situacao = situacaoEnum;
         }
 
         public int Id { get; set; }
+        public Guid IdUsuarioIdentity { get; private set; }
         public TipoMovimentacaoEnum TipoOperacao { get; private set; }
         public string TipoDescriscao { get; private set; }
         public SituacaoEnum Situacao { get; private set; }

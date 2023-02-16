@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -10,9 +11,10 @@ using api.Data;
 namespace apiProjetoFinaceiro.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230215010349_atualizacaoTable")]
+    partial class atualizacaoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +37,10 @@ namespace apiProjetoFinaceiro.Migrations
                         .HasColumnType("date")
                         .HasColumnName("datamovimentacaolancamento");
 
-                    b.Property<Guid>("IdUsuarioIdentity")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id_usuario_identity");
+                    b.Property<string>("EmailUsuarioIdentity")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("email_usuario_identity");
 
                     b.Property<string>("Situacao")
                         .IsRequired()
@@ -68,10 +71,6 @@ namespace apiProjetoFinaceiro.Migrations
                         .IsUnicode(true)
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    b.Property<Guid>("IdUsuarioIdentity")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("id_usuario_identity");
 
                     b.Property<string>("Situacao")
                         .IsRequired()

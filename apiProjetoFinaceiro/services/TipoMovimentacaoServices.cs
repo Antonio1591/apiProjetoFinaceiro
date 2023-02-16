@@ -5,21 +5,26 @@ using apiProjetoFinaceiro.Model.View;
 using apiProjetoFinaceiro.Model;
 using apiProjetoFinaceiro.Model.Mapping;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apiProjetoFinaceiro.services
 {
-    public class TipoMovimentacaoServices: ITipoMovimentacaoServices
+    public class TipoMovimentacaoServices : ITipoMovimentacaoServices
     {
         private readonly DataContext _context;
-
-        public TipoMovimentacaoServices(DataContext Context)
+        private readonly IAspNetUser _AspNetUser;
+    
+        public TipoMovimentacaoServices(DataContext context, IAspNetUser aspNetUser)
         {
-            _context = Context;
+            _context = context;
+            _AspNetUser = aspNetUser;
         }
+
         public async Task<RespostaApi<TipoMovimentacaoViewModel>> CadastroTipo(TipoMovimentacaoInputModel input)
         {
-            
-            TipoMovimentacao tipoMovimentacao = new TipoMovimentacao(input.TipoOperacao,input.TipoDescriscao, input.SituacaoEnum);
+            var idUsuarioIdentity = _AspNetUser.ObterUserId();
+
+            TipoMovimentacao tipoMovimentacao = new TipoMovimentacao(idUsuarioIdentity, input.TipoOperacao, input.TipoDescriscao, input.SituacaoEnum);
             if (!tipoMovimentacao.EhValido)
             {
                 return new RespostaApi<TipoMovimentacaoViewModel>
@@ -35,7 +40,9 @@ namespace apiProjetoFinaceiro.services
         }
         public async Task<RespostaApi<TipoMovimentacaoViewModel>> AtualizarTipo(TipoMovimentacaoInputModel input)
         {
-            var tipoMovimentacao = await _context.tipoMovimentacao.FindAsync(input);
+            var idUsuarioIdentity = _AspNetUser.ObterUserId();
+            TipoMovimentacao? tipoMovimentacao = await _context.tipoMovimentacao
+                                                                 .FirstOrDefaultAsync(T=>T.IdUsuarioIdentity == idUsuarioIdentity || T.TipoOperacao == input.TipoOperacao || T.TipoDescriscao == input.TipoDescriscao);
             tipoMovimentacao.AlterarTipo(input.TipoOperacao, input.TipoDescriscao, input.SituacaoEnum);
             if (!tipoMovimentacao.EhValido)
                 return new RespostaApi<TipoMovimentacaoViewModel>
@@ -52,11 +59,29 @@ namespace apiProjetoFinaceiro.services
         }
         public IEnumerable<TipoMovimentacaoViewModel> BuscarTipos()
         {
+            var idUsuarioIdentity = _AspNetUser.ObterUserId();
             IEnumerable<TipoMovimentacaoViewModel> tipoMovimentacao = _context.tipoMovimentacao.ToList()
+                                                                                                .Where(T=>T.IdUsuarioIdentity== idUsuarioIdentity)
                                                                                                 .Select(P => P.ParaViewModel());
 
             return tipoMovimentacao;
         }
 
+        public async Task<RespostaApi<TipoMovimentacaoViewModel>> ObterPorId(int idTipoMovimentacao)
+        {
+            var idUsuarioIdentity = _AspNetUser.ObterUserId();
+            TipoMovimentacao? tipoMovimentacao =  await _context.tipoMovimentacao.FirstOrDefaultAsync(T => T.IdUsuarioIdentity == idUsuarioIdentity || T.Id == idTipoMovimentacao);
+                                                                                               
+
+            if (!tipoMovimentacao.EhValido)
+                return new RespostaApi<TipoMovimentacaoViewModel>
+                {
+                    MenssagensErros = tipoMovimentacao.Erros,
+                    Erro = true,
+                };
+
+            return new RespostaApi<TipoMovimentacaoViewModel>
+            { Dados = tipoMovimentacao.ParaViewModel() };
+        }
     }
 }

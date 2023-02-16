@@ -3,11 +3,13 @@ using apiProjetoFinaceiro.Model.View;
 using apiProjetoFinaceiro.Model;
 using apiProjetoFinaceiro.services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apiProjetoFinaceiro.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "VIP")]
     public class TiposMovimentacaoController:ControllerBase
     {
         private readonly ITipoMovimentacaoServices _ITiposMovimentacaoServices;

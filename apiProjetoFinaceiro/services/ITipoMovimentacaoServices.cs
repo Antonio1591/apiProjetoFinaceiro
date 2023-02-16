@@ -9,5 +9,6 @@ namespace apiProjetoFinaceiro.services
         Task<RespostaApi<TipoMovimentacaoViewModel>> CadastroTipo(TipoMovimentacaoInputModel input);
         Task<RespostaApi<TipoMovimentacaoViewModel>> AtualizarTipo(TipoMovimentacaoInputModel input);
         IEnumerable<TipoMovimentacaoViewModel> BuscarTipos();
+        Task<RespostaApi<TipoMovimentacaoViewModel>> ObterPorId(int Id);
     }
 }

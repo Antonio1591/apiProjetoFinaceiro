@@ -7,8 +7,8 @@ namespace apiProjetoFinaceiro.services
 {
     public interface IMovimentacaoFinanceiraServices
     {
-        Task<RespostaApi<MovimentacaoFinanceiraViewModel>> NovaMovimentacao(MovimentacaoFinaceiraInputModel movimentacaoInputModel,IdentityUser user);
-        Task<RespostaApi<MovimentacaoFinanceiraViewModel>> AtualizarMovimentacao(MovimentacaoFinaceiraInputModel movimentacaoInputModel);
-        IEnumerable<MovimentacaoFinanceiraViewModel> BuscarMovimentacao(IdentityUser user);
+        Task<RespostaApi<MovimentacaoFinanceiraViewModel>> NovaMovimentacao(MovimentacaoFinanceiraInputModel movimentacaoInputModel);
+        Task<RespostaApi<MovimentacaoFinanceiraViewModel>> AtualizarMovimentacao(MovimentacaoFinanceiraInputModel movimentacaoInputModel);
+        IEnumerable<MovimentacaoFinanceiraViewModel> BuscarMovimentacao();
     }
 }

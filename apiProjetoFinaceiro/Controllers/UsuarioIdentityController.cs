@@ -11,10 +11,12 @@ namespace apiProjetoFinaceiro.Controllers
     public class UsuarioIdentityController:ControllerBase
     {
         private readonly IIdentityUsuarioServices _identityUsuarioServices;
+        private readonly IAspNetUser _aspNetUser;
 
-        public UsuarioIdentityController(IIdentityUsuarioServices identityUsuarioServices)
+        public UsuarioIdentityController(IIdentityUsuarioServices identityUsuarioServices, IAspNetUser aspNetUser)
         {
             _identityUsuarioServices = identityUsuarioServices;
+            _aspNetUser = aspNetUser;
         }
 
         [HttpPost("Cadastro")]
@@ -37,8 +39,10 @@ namespace apiProjetoFinaceiro.Controllers
                 return BadRequest(ModelState);
             var resultado = await _identityUsuarioServices.Login(usuarioLoginResponse);
             if (resultado.Sucesso)
+            {
+                _aspNetUser.EstaAutenticado();
                 return Ok(resultado);
-
+            }
             return Unauthorized(resultado);
         }
     }

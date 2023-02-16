@@ -14,39 +14,39 @@ namespace apiProjetoFinaceiro.Controllers
     [ApiController]
     public class AutentificacaoUsuario:ControllerBase
     {
-        private readonly IUsuarioServices _IUsuarioServices;
+        //private readonly IUsuarioServices _IUsuarioServices;
 
-        public AutentificacaoUsuario(IUsuarioServices iUsuarioServices)
-        {
-            _IUsuarioServices = iUsuarioServices;
+        //public AutentificacaoUsuario(IUsuarioServices iUsuarioServices)
+        //{
+        //    _IUsuarioServices = iUsuarioServices;
             
-        }
+        //}
 
-        [HttpPost("Login")]
-        [AllowAnonymous]
-        public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> Logim([FromBody] LoginInputModel loginInput)
-        {
-            var resultado = await _IUsuarioServices.Logim(loginInput);
-            if (resultado == null) return BadRequest(resultado.MenssagensErros);
-            if (resultado.Erro)
-            {
-                return BadRequest(resultado.MenssagensErros);
-            }
-            return new RespostaApi<UsuarioViewModel> { Dados = resultado.Dados };
+        //[HttpPost("Login")]
+        //[AllowAnonymous]
+        //public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> Logim([FromBody] LoginInputModel loginInput)
+        //{
+        //    var resultado = await _IUsuarioServices.Logim(loginInput);
+        //    if (resultado == null) return BadRequest(resultado.MenssagensErros);
+        //    if (resultado.Erro)
+        //    {
+        //        return BadRequest(resultado.MenssagensErros);
+        //    }
+        //    return new RespostaApi<UsuarioViewModel> { Dados = resultado.Dados };
 
-        }
+        //}
 
-        [HttpPut("AlterarSenha")]
-        public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> AlterarSenha([FromBody] UsuarioImputModel usuarioImputModel)
-        {
-            var resultado = await _IUsuarioServices.AlterarSenha(usuarioImputModel);
-            if (resultado == null) return BadRequest(resultado.MenssagensErros);
-            if (resultado.Erro)
-            {
-                return BadRequest(resultado.MenssagensErros);
-            }
-            return new RespostaApi<UsuarioViewModel> { Dados = resultado.Dados };
+        //[HttpPut("AlterarSenha")]
+        //public async Task<ActionResult<RespostaApi<UsuarioViewModel>>> AlterarSenha([FromBody] UsuarioImputModel usuarioImputModel)
+        //{
+        //    var resultado = await _IUsuarioServices.AlterarSenha(usuarioImputModel);
+        //    if (resultado == null) return BadRequest(resultado.MenssagensErros);
+        //    if (resultado.Erro)
+        //    {
+        //        return BadRequest(resultado.MenssagensErros);
+        //    }
+        //    return new RespostaApi<UsuarioViewModel> { Dados = resultado.Dados };
 
-        }
+        //}
     }
 }
