@@ -45,5 +45,18 @@ namespace apiProjetoFinaceiro.Controllers
             }
             return Unauthorized(resultado);
         }
+
+        [HttpPost("AlterarSenha")]
+        public async Task<ActionResult<UsuarioAlterarSenhaResponse>> AlterarSenha(UsuarioAlterarSenhaRequest usuarioCadastro)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+            var resultado = await _identityUsuarioServices.ChangePassword(usuarioCadastro);
+            if (resultado.Sucesso)
+                return Ok(resultado);
+            if (resultado.Erros.Count > 0)
+                return BadRequest(resultado);
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 }

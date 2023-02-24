@@ -4,15 +4,9 @@ namespace apiProjetoFinaceiro.Model.Imput
 {
     public class TipoMovimentacaoInputModel
     {
-        public TipoMovimentacaoInputModel(TipoMovimentacaoEnum tipoOperacao, string tipoDescriscao, SituacaoEnum situacaoEnum)
-        {
-            
-            TipoOperacao = tipoOperacao;
-            TipoDescriscao = tipoDescriscao;
-            SituacaoEnum = situacaoEnum;
-        }
+
+        public int Id { get; set; }
         [Required]
-      
         public TipoMovimentacaoEnum TipoOperacao { get;  set; }
         [Required]
         public string TipoDescriscao { get;  set; }

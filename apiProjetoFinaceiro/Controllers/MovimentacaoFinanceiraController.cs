@@ -3,7 +3,6 @@ using apiProjetoFinaceiro.Model.Imput;
 using apiProjetoFinaceiro.Model.View;
 using apiProjetoFinaceiro.services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apiProjetoFinaceiro.Controllers
@@ -28,9 +27,10 @@ namespace apiProjetoFinaceiro.Controllers
 
         }
 
-        [HttpPost("Cadastro")]
+        [HttpPost("CadastroMovimentacao")]
         public async Task<ActionResult<RespostaApi<MovimentacaoFinanceiraViewModel>>> CadastrarMovimentacao(MovimentacaoFinanceiraInputModel input)
         {
+            
             var movimentacaoFinaceira = await _IMovimentacaoFinanceira.NovaMovimentacao(input);
             if (movimentacaoFinaceira.Erro)
                 return BadRequest(movimentacaoFinaceira.MenssagensErros);

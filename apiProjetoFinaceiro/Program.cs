@@ -3,11 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using apiProjetoFinaceiro.services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.Options;
-using apiProjetoFinaceiro.Model.Domain.UsuarioIdentityRepositorio;
 using apiProjetoFinaceiro.Data.AutentificacaoIdentity;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 string stringDeConexao = builder.Configuration.GetConnectionString("conexaoMySQL");
@@ -54,8 +50,7 @@ builder.Services.AddAuthentication("JwtOptions");
 
 builder.Services.AddDbContext<IdentityDataContext>(opt =>
 opt.UseMySql(stringDeConexao, ServerVersion.AutoDetect(stringDeConexao))
-.UseSnakeCaseNamingConvention()
-);
+.UseSnakeCaseNamingConvention());
 
 builder.Services.AddDefaultIdentity<IdentityUser>()
         .AddRoles<IdentityRole>()

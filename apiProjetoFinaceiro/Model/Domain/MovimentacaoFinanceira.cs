@@ -7,7 +7,7 @@ namespace apiProjetoFinaceiro.Model.Domain
         protected MovimentacaoFinanceira(){}
         public MovimentacaoFinanceira(Guid idUsuarioIdentity, DateTime datamovimentacaoEntrada, decimal valorMovimentacao, TipoMovimentacao tipoMovimentacao, SituacaoEnum situacao)
         {
-            if (string.IsNullOrEmpty(valorMovimentacao.ToString()) || valorMovimentacao <= 0)
+            if (valorMovimentacao <= 0)
                 AddErro("Favor informar um valor valido");
             if (datamovimentacaoEntrada.Year < DateTime.Now.Year - 100)
                 AddErro("Favor informa uma data valida");

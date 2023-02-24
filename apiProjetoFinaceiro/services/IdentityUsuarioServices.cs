@@ -1,9 +1,12 @@
 ﻿using api.Data;
 using apiProjetoFinaceiro.Model.Domain;
 using apiProjetoFinaceiro.Model.Domain.UsuarioIdentityRepositorio;
+using MathNet.Numerics.LinearAlgebra;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NPOI.SS.Formula.Functions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
@@ -15,6 +18,7 @@ namespace apiProjetoFinaceiro.services
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly JwtOptions _jwtOptions;
+        private List<string> _erros => new List<string>();
         public IdentityUsuarioServices(
             SignInManager<IdentityUser> signInManager,
                                 UserManager<IdentityUser> userManager,
@@ -114,6 +118,24 @@ namespace apiProjetoFinaceiro.services
             return claims;
         }
 
-       
+        public async Task<UsuarioAlterarSenhaResponse> ChangePassword(UsuarioAlterarSenhaRequest model)
+        {
+            UsuarioAlterarSenhaResponse usuarioAlterarSenhaResponse = new UsuarioAlterarSenhaResponse();
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                usuarioAlterarSenhaResponse.AdicionarErro("Email não encontrado");
+                return usuarioAlterarSenhaResponse;
+                
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var result = await _userManager.ResetPasswordAsync(user, token, model.Senha);
+
+             usuarioAlterarSenhaResponse = new UsuarioAlterarSenhaResponse(result.Succeeded);
+            if (!result.Succeeded && result.Errors.Count() > 0)
+                usuarioAlterarSenhaResponse.AdicionarErros(result.Errors.Select(r => r.Description));
+            return usuarioAlterarSenhaResponse;
+        }
     }
 }

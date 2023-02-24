@@ -2,7 +2,7 @@
 
 namespace apiProjetoFinaceiro.Model.Domain.UsuarioIdentityRepositorio
 {
-    public class UsuarioCadastroRequest
+    public class UsuarioAlterarSenhaRequest
     {
         [Required(ErrorMessage = "O campo {0} é obrigatorio")]
         [EmailAddress(ErrorMessage = "O campo{0} é invalido")]
@@ -10,8 +10,5 @@ namespace apiProjetoFinaceiro.Model.Domain.UsuarioIdentityRepositorio
         [Required(ErrorMessage = "O campo {0} é obrigatorio")]
         [StringLength(50, ErrorMessage = "O campo {0} deve ter ebtre {2} e {1} caracteres", MinimumLength = 6)]
         public string Senha { get; set; }
-        [Compare(nameof(Senha),ErrorMessage = "As senhas devem ser iguais")]
-        public string SenhaConfirmacao { get; set; }
-        public string Role { get; set; }
     }
 }

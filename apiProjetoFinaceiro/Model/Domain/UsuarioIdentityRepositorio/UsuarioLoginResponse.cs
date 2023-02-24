@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System.Text.Json.Serialization;
 
 namespace apiProjetoFinaceiro.Model.Domain.UsuarioIdentityRepositorio
 {
@@ -29,6 +30,5 @@ namespace apiProjetoFinaceiro.Model.Domain.UsuarioIdentityRepositorio
             Erros.Add(erro);
         public void AdicionarErros(IEnumerable<string> erros) =>
             Erros.AddRange(erros);
-    
     }
 }

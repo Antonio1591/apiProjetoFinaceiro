@@ -42,7 +42,7 @@ namespace apiProjetoFinaceiro.services
         {
             var idUsuarioIdentity = _AspNetUser.ObterUserId();
             TipoMovimentacao? tipoMovimentacao = await _context.tipoMovimentacao
-                                                                 .FirstOrDefaultAsync(T=>T.IdUsuarioIdentity == idUsuarioIdentity || T.TipoOperacao == input.TipoOperacao || T.TipoDescriscao == input.TipoDescriscao);
+                                                                 .FirstOrDefaultAsync(T=>T.IdUsuarioIdentity == idUsuarioIdentity && T.Id == input.Id );
             tipoMovimentacao.AlterarTipo(input.TipoOperacao, input.TipoDescriscao, input.SituacaoEnum);
             if (!tipoMovimentacao.EhValido)
                 return new RespostaApi<TipoMovimentacaoViewModel>
@@ -70,7 +70,7 @@ namespace apiProjetoFinaceiro.services
         public async Task<RespostaApi<TipoMovimentacaoViewModel>> ObterPorId(int idTipoMovimentacao)
         {
             var idUsuarioIdentity = _AspNetUser.ObterUserId();
-            TipoMovimentacao? tipoMovimentacao =  await _context.tipoMovimentacao.FirstOrDefaultAsync(T => T.IdUsuarioIdentity == idUsuarioIdentity || T.Id == idTipoMovimentacao);
+            TipoMovimentacao? tipoMovimentacao =  await _context.tipoMovimentacao.FirstOrDefaultAsync(T => T.IdUsuarioIdentity == idUsuarioIdentity && T.Id == idTipoMovimentacao);
                                                                                                
 
             if (!tipoMovimentacao.EhValido)

@@ -9,5 +9,7 @@ namespace apiProjetoFinaceiro.services
         Task<UsuarioCadastroResponse> CadastrarUsuario(UsuarioCadastroRequest input);
 
         Task<UsuarioLoginResponse> Login(UsuarioLoginRequet usuarioLogin);
+
+        Task<UsuarioAlterarSenhaResponse> ChangePassword(UsuarioAlterarSenhaRequest model);
     }
 }
