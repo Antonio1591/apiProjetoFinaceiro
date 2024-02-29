@@ -52,7 +52,7 @@ namespace apiProjetoFinaceiro.Controllers
             {
                 Dados = movimentacaoFinaceira.Dados,
             };
-
+//
         }
     }
 }
